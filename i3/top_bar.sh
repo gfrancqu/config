@@ -22,7 +22,7 @@ FONT2="Roboto Medium:size=11"
 
 
 # Panel 
-PW=1366
+PW=1920
 PH=24
 PX=0
 PY=0
@@ -89,7 +89,7 @@ mainip(){
 	     
 }
 volume(){
-    volume=$(amixer get Master |grep % |awk '{print $5}'|sed -e 's/\[//' -e 's/\]//'|head -n 1)
+    volume=$(amixer get Master |grep % |awk '{print $4}'|sed -e 's/\[//' -e 's/\]//'|head -n 1)
     muted=$(amixer get Master |grep '\[' |awk '{print $6}'|head -n 1)
 
     if [ $muted = "[on]" ]; then

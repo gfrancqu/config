@@ -21,7 +21,7 @@ USERS_GROUP="users"
 
 function install_aur() {
 	#  archlinuxfr repo
-	echo -e "[archlinuxfr]\nSigLevel = Never\nServer = http://repo.archlinux.fr/$arch" >> /etc/pacman.conf
+	echo -e "[archlinuxfr]\nSigLevel = Never\nServer = http://repo.archlinux.fr/\$arch" >> /etc/pacman.conf
 	pacman -Syu yaourt
 }
 
@@ -30,7 +30,7 @@ function install_aur() {
 ###############
 
 function create_user() {
-	user -g $USERS_GROUP -G network -m -s /bin/bash $USERNAME
+	useradd -g $USERS_GROUP -G network,sudo  -m -s /bin/bash $USERNAME
 	mkdir /home/$USERNAME/screenshots && chown guy /home/$USERNAME/screenshots
 }
 
@@ -38,16 +38,17 @@ function create_user() {
 # graphical environnement
 #########################
 
-function install_desktop_environnement(){
-	pacman -Syu xorg-server xorg-xinit
+function install_desktop_environment(){
+	yaourt -Sy xorg-server xorg-xinit
 	# DM
-	pacman -S lightdm lightdm-webkit2-greeter
-	sed -i "s/greeter-session=lightdm-gtk-greeter/greeter-session=lightdm-webkit2-greeter/g"
-	systemctl enable lightdm.service
-	pacman -Syu i3
-	su -c "yaourt lightdm-webkit2-theme-material2 ttf-roboto rofi scrot alsa-utils feh dmenu network-manager-applet" $USERNAME
-	cp lightdm-webkit2-greeter.conf /etc/lightdm/
-	cp -r i3 /home/guy/.config/
+	yaourt -Sy lightdm lightdm-webkit2-greeter i3 lemonbar-xft-git conky lightdm-webkit2-theme-material2 ttf-roboto ttf-font-awesome rofi scrot alsa-utils feh dmenu network-manager-applet terminator xorg-xlsfonts upower acpixorg-dpyinfo ttf-inconsolata
+	sudo sed -i "s/^#greeter-session=example-gtk-gnome/greeter-session=lightdm-webkit2-greeter/g" /etc/lightdm/lightdm.conf
+	sudo systemctl enable lightdm.service
+	sudo cp lightdm-webkit2-greeter.conf /etc/lightdm/
+	sudo cp Xresources /home/$USERNAME/.Xresources
+	sudo cp 50-keyboard.conf /etc/X11/xorg.conf.d/
+	cp -r i3 /home/$USERNAME/.config/
+	cp terminator-config.conf /home/$USERNAME/.config/terminator/config
 }
 
 #############
@@ -56,6 +57,8 @@ function install_desktop_environnement(){
 
 function install_network(){
 	pacman -Syu iw networkmanager networkmanager-openvpn
+	sudo systemctl enable NetworkManager
+	sudo cp 50-org-freedesktop.NetowkrManager.rules /etc/polkit-1/rules.d/
 }
 
 ################
