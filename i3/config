@@ -45,10 +45,10 @@ bindsym $mod+Shift+a kill
 bindsym $mod+d exec rofi -show run
 
 # change focus
-bindsym $mod+j focus left
-bindsym $mod+k focus down
-bindsym $mod+l focus up
-bindsym $mod+m focus right
+#bindsym $mod+j focus left
+#bindsym $mod+k focus down
+#bindsym $mod+l focus up
+#bindsym $mod+m focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
@@ -57,10 +57,10 @@ bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
 # move focused window
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+l move up
-bindsym $mod+Shift+m move right
+#bindsym $mod+Shift+j move left
+#bindsym $mod+Shift+k move down
+#bindsym $mod+Shift+l move up
+#bindsym $mod+Shift+m move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -166,14 +166,25 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
+# screen mode
+mode "output" {
+	bindsym $mod+Right move workspace to output right
+	bindsym $mod+Left move workspace to output left
+	
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+
+
+bindsym $mod+o mode "output"
 bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
-bar {
-        status_command i3status
-	position bottom
-}
+#bar {
+#        status_command i3status
+#	position bottom
+#}
 
 #######################
 # startups applications
@@ -184,29 +195,33 @@ exec compton
 
 # networking applet
 exec --no-startup-id nm-applet
+exec --no-startup-id blueman-applet
 
-#bar
-#exec --no-startup-id conky -c ~/.config/i3/empty_top 
-exec --no-startup-id .config/i3/top_bar.sh
 
 # wallpaper
-exec_always feh --bg-scale /home/guy/.wallpapers/8cabf003e72dae855c62f2bc93e74ab1.jpg
+exec_always feh --bg-scale ~/.config/wallpaper.jpg
 
 # custom xterm
 exec_always xrdb -merge ~/.Xressources
 
 for_window [class="^.*"] border pixel 0
 
+# polybar
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+
 ##############
 # custom binds
 ##############
 
 # sounds
-bindsym XF86AudioRaiseVolume exec amixer -q sset Master 5%+ unmute
-bindsym XF86AudioLowerVolume  exec amixer -q sset Master 5%- unmute
+bindsym XF86AudioRaiseVolume exec amixer -q sset Master 10%+ unmute
+bindsym XF86AudioLowerVolume  exec amixer -q sset Master 10%- unmute
 bindsym XF86AudioMute exec amixer -q sset Master toggle
 # brightness
 bindsym XF86MonBrightnessDown exec xbacklight -dec 10%
 bindsym XF86MonBrightnessUp exec xbacklight -inc 10%
 # screenshot
 bindsym $mod+a exec scrot '%Y-%m-%d-%H-%s_$wx$h.png' -e 'mv $f ~/screenshots/'
+
+bindsym $mod+l exec i3lock-fancy -p -t ""
+bindsym $mod+t exec rofi -show TODO -modi TODO:~/.config/todos.sh -key-todo SuperL+t
